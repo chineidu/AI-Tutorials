@@ -5,10 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "instructor==1.7.9",
+    "langchain-openai>=0.3.16",
+    "langgraph>=0.4.1",
+    "nest-asyncio>=1.6.0",
     "numpy>=2.2.5",
+    "ollama>=0.4.8",
     "pandas>=2.2.3",
     "polars>=1.28.1",
-    "rich>=14.0.0",
+    "pydantic-settings>=2.9.1",
+    "rich>=13.9.4",
     "smolagents>=1.14.0",
 ]
 
@@ -19,3 +25,5 @@ dev = [
     "pre-commit>=4.2.0",
     "ruff>=0.11.6",
 ]
+
+
