@@ -31,7 +31,7 @@ class Settings(BaseSettingsConfig):
 
     # GROQ
     GROQ_API_KEY: SecretStr
-    GROQ_BASE_URL: str
+    # GROQ_BASE_URL: str
 
     # LANGFUSE
     LANGFUSE_SECRET_KEY: SecretStr
