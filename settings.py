@@ -31,6 +31,12 @@ class Settings(BaseSettingsConfig):
 
     # GROQ
     GROQ_API_KEY: SecretStr
+    GROQ_BASE_URL: str
+
+    # LANGFUSE
+    LANGFUSE_SECRET_KEY: SecretStr
+    LANGFUSE_PUBLIC_KEY: SecretStr
+    LANGFUSE_HOST: str
 
 
 def refresh_settings() -> Settings:

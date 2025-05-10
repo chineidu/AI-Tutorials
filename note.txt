@@ -1,3 +1,183 @@
 export OLLAMA_FLASH_ATTENTION=1 OLLAMA_KEEP_ALIVE="15m" \
     OLLAMA_NUM_THREADS=8 OLLAMA_MAX_LOADED=2 OLLAMA_NUM_PARALLEL=4 \
     && ollama serve > logs.txt 2>&1
+
+
+def extract_response(result: str) -> dict[str, Any]:
+    """Extract the response from the result."""
+    try:
+        return json.loads(result.replace("<think>", "").replace("</think>", "").strip())
+    except json.JSONDecodeError:
+        return {}
+
+
+async def read_email(state: EmailState) -> dict[str, Any]:
+    """Alfred reads and logs the incoming email."""
+    email: dict[str, Any] = state["email"]
+
+    # Some preprocessing steps
+    print(
+        f"Alfred is processing an email from {email['sender']!r} with "
+        f"subject {email['subject']!r}.\n\n"
+    )
+
+    # No state changes neede here
+    return {}
+
+
+async def classify_email(state: EmailState) -> dict[str, Any]:
+    """Alfred uses an LLM to classify the email as spam or not."""
+    email: dict[str, Any] = state["email"]
+    categories: list[str] = [
+        "inquiry",
+        "complaint",
+        "thank you",
+        "request",
+        "information",
+        "other",
+    ]
+
+    # Prepare the prompt
+    prompt: str = f"""
+    <prompt>
+        As Alfred the butler, analyze this email and determine if it's 
+        <type> **spam** or **ham** </type>.
+
+        <email>
+            From: {email["sender"]}
+            Subject: {email["subject"]}
+            Body: {email["body"]}
+        </email>
+
+        <instruction>
+            1. Determine if this email is <type> **spam** or **ham** </type>.
+            2. If it's spam, explain why.
+            3. If it's ham, categorize it as <categories> {categories} </categories>.
+        </instruction>
+
+        # Example Output:
+        <response>
+            {{
+                "type": "ham",
+                "reason": "null",
+                "email_category": "inquiry",
+            }}
+        </response>
+
+        <instruction>
+            Return the response in JSON format shown above. Remember to include your reason
+            if it's a spam email.
+        </instruction>
+
+    </prompt>
+    """
+
+    # Call the LLM
+    response: EmailStateResponse = await chat_completion(
+        message={"role": "user", "content": prompt}, response_model=EmailStateResponse
+    )
+    print(f"Response: {response}")  # for debugging
+
+    # Parse response
+    response_text: dict[str, Any] = response.model_dump()  # extract_response(response)
+    is_spam: bool = response_text["type"] == "spam"
+    print(f"Response: {response_text}")  # for debugging
+
+    # Extract reason if spam
+    spam_reason: str | None = None
+    try:
+        if is_spam:
+            spam_reason = response_text["reason"]
+    except Exception as e:
+        print(f"Error: {e}\n{type(e)}")
+
+    # Determine the category
+    email_category: str | None = None
+    if not is_spam:
+        email_category = response_text["email_category"]
+
+    # Update messages for tracking
+    new_messages = state.get("messages", []) + [
+        {"role": "user", "content": prompt},
+        {"role": "assistant", "content": response},
+    ]
+
+    # Return state updates
+    return {
+        "is_spam": is_spam,
+        "spam_reason": spam_reason,
+        "email_category": email_category,
+        "messages": new_messages,
+    }
+
+
+async def handle_spam(state: EmailState) -> dict[str, Any]:
+    """Alfred discards spam emails."""
+    print(
+        f"Alfred has marked the email as spam. \nReason: {state['spam_reason']}. \n"
+        "The email has been moved to the spam folder."
+    )
+
+    # No state changes needed here
+    return {}
+
+
+async def draft_response(state: EmailState) -> dict[str, Any]:
+    """Alfred drafts a response to the email."""
+    print(f"{state = }")
+    email: dict[str, Any] = state["email"]
+
+    # Prepare the prompt
+    prompt: str = f"""
+    <prompt>
+        As Alfred the butler, draft a response to this email.
+
+        <email>
+            From: {email["sender"]}
+            Subject: {email["subject"]}
+            Body: {email["body"]}
+        </email>
+
+        This email has been categorized as {state["email_category"]}.
+
+        <instruction>
+            Draft a brief response that Mr. Neidu can review and personalize before sending.
+        </instruction>
+
+    </prompt>
+    """
+
+    # Call the LLM
+    response: EmailStateResponse = await chat_completion(
+        message={"role": "user", "content": prompt}, response_model=EmailStateResponse
+    )
+
+    # Update messages for tracking
+    new_message: dict[str, Any] = state.get("messages", []) + [
+        {"role": "user", "content": prompt},
+        {"role": "assistant", "content": response.model_dump()},
+    ]
+
+    # Return state updates
+    return {
+        "email_draft": response.model_dump(),
+        "messages": new_message,
+    }
+
+
+async def notify_user(state: EmailState) -> dict[str, Any]:
+    """Alfred sends a notification to the user."""
+    print(f"{state = }")  # for debugging
+
+    email: dict[str, Any] = state["email"]
+
+    print("\n" + "=" * 50)
+    print(f"Sir, you've received an email from {email['sender']}.")
+    print(f"Subject: {email['subject']}")
+    print(f"Category: {state['email_category']}")
+    print("\nI've drafted a response for your review.")
+    print("-" * 50)
+    print(state["email_draft"])
+    print("=" * 50 + "\n")
+
+    return {}
