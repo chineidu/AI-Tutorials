@@ -38,6 +38,9 @@ class Settings(BaseSettingsConfig):
     LANGFUSE_PUBLIC_KEY: SecretStr
     LANGFUSE_HOST: str
 
+    # OPENROUTER
+    OPENROUTER_API_KEY: SecretStr
+
 
 def refresh_settings() -> Settings:
     """Refresh environment variables and return new Settings instance.
