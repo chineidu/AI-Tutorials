@@ -38,6 +38,9 @@ class Settings(BaseSettingsConfig):
     LANGFUSE_PUBLIC_KEY: SecretStr
     LANGFUSE_HOST: str
 
+    # TAVILY
+    TAVILY_API_KEY: SecretStr
+
     # OPENROUTER
     OPENROUTER_API_KEY: SecretStr
 
