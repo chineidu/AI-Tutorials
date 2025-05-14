@@ -44,7 +44,7 @@ class ModelEnum(str, Enum):
     GEMMA_3p0_1B_LOCAL = "gemma3:1b"
     GEMMA_3p0_12B_REMOTE_FREE = "google/gemma-3-12b-it:free"
     GEMMA_3p0_12B_REMOTE = "google/gemma-3-12b-it"
-    GEMINI_2p5_3B_REMOTE = "google/gemini-2.5-flash-preview"  # $0.15/1M tokens
+    GEMINI_2p5_FLASH_REMOTE = "google/gemini-2.5-flash-preview"  # $0.15/1M tokens
     GPT_4_p_1_NANO_REMOTE = "openai/gpt-4.1-nano"
     GPT_4_o_MINI_REMOTE = "openai/gpt-4o-mini"  # $0.15/1M tokens
     QWEN_2p5_3B_LOCAL = "qwen2.5:3b"
@@ -60,6 +60,9 @@ class ModelEnum(str, Enum):
     LLAMA_4_MAVERICK_17B_REMOTE_FREE = "meta-llama/llama-4-maverick:free"
     PHI_4p0_14B_REASONING_REMOTE = "microsoft/phi-4-reasoning-plus"  # $0.07/1M tokens
     PHI_4p0_5p6B_MULTIMODAL_REMOTE_FREE = "microsoft/phi-4-multimodal-instruct"  # $0.05/1M tokens
+    PHI_3p5_128K_INSTRUCT_WF_TOOL_USE_REMOTE = (
+        "microsoft/phi-3.5-mini-128k-instruct"  # $0.10/1M tokens
+    )
     MISTRAL_7B_REMOTE_FREE = "mistralai/mistral-7b-instruct:free"
     MISTRAL_NEMO_12B_REMOTE_FREE = "mistralai/mistral-nemo:free"
     MISTRAL_8B_REMOTE = "mistralai/ministral-8b"  # $0.10/1M tokens

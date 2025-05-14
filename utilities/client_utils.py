@@ -1,14 +1,9 @@
-from typing import Any
+from typing import Any, Literal
 
 import instructor
 from openai import AsyncOpenAI
 
 from settings import refresh_settings
-from utilities.jinja_utils import (
-    Environment,
-    load_and_render_template,
-    setup_jinja_environment,
-)
 
 # Load Settings
 SETTINGS = refresh_settings()
@@ -31,8 +26,19 @@ context: dict[str, Any] = {
 # )
 
 
-def get_client(is_remote: bool = True) -> instructor.AsyncInstructor:
+def get_client(
+    is_remote: bool = True, mode: Literal["json_mode", "tool_mode"] = "json_mode"
+) -> instructor.AsyncInstructor:
     """Get the client to use for entity extraction."""
+
+    def _return_mode(mode: Literal["json_mode", "tool_mode"]) -> instructor.Mode:
+        if mode == "json_mode":
+            return instructor.Mode.JSON
+        return instructor.Mode.TOOLS
+
+    _mode = _return_mode(mode)
+    print(f"Using mode: {_mode!r}")
+
     if is_remote:
         # using remote
         remote_client: AsyncOpenAI = AsyncOpenAI(
@@ -40,11 +46,11 @@ def get_client(is_remote: bool = True) -> instructor.AsyncInstructor:
             api_key=SETTINGS.OPENROUTER_API_KEY.get_secret_value(),
         )
         print("Using Remote")
-        return instructor.patch(remote_client, mode=instructor.Mode.JSON)
+        return instructor.patch(remote_client, mode=_mode)
 
     ollama_client: AsyncOpenAI = AsyncOpenAI(
         base_url="http://localhost:11434/v1",
         api_key="ollama",  # required, but unused
     )
     print("Using Ollama")
-    return instructor.from_openai(ollama_client, mode=instructor.Mode.JSON)
+    return instructor.patch(ollama_client, mode=_mode)
