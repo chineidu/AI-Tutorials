@@ -42,15 +42,15 @@ def get_client(
     if is_remote:
         # using remote
         remote_client: AsyncOpenAI = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=SETTINGS.OPENROUTER_URL,
             api_key=SETTINGS.OPENROUTER_API_KEY.get_secret_value(),
         )
         print("Using Remote")
-        return instructor.patch(remote_client, mode=_mode)
+        return instructor.from_openai(remote_client, mode=_mode)
 
     ollama_client: AsyncOpenAI = AsyncOpenAI(
-        base_url="http://localhost:11434/v1",
-        api_key="ollama",  # required, but unused
+        base_url=SETTINGS.OLLAMA_URL,
+        api_key=SETTINGS.OLLAMA_API_KEY.get_secret_value(),  # required, but unused
     )
     print("Using Ollama")
-    return instructor.patch(ollama_client, mode=_mode)
+    return instructor.from_openai(ollama_client, mode=_mode)

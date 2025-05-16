@@ -29,6 +29,10 @@ class BaseSettingsConfig(BaseSettings):
 class Settings(BaseSettingsConfig):
     """Application settings class containing credentials."""
 
+    # OLLAMA
+    OLLAMA_API_KEY: SecretStr
+    OLLAMA_URL: str
+
     # GROQ
     GROQ_API_KEY: SecretStr
     # GROQ_BASE_URL: str
@@ -43,6 +47,10 @@ class Settings(BaseSettingsConfig):
 
     # OPENROUTER
     OPENROUTER_API_KEY: SecretStr
+    OPENROUTER_URL: str
+
+    # MISTRAL AI
+    MISTRAL_API_KEY: SecretStr
 
 
 def refresh_settings() -> Settings:

@@ -58,6 +58,7 @@ class ModelEnum(str, Enum):
     LLAMA_3p1_8B_REMOTE = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
     LLAMA_3p2_11B_VISION_REMOTE_FREE = "meta-llama/llama-3.2-11b-vision-instruct:free"
     LLAMA_4_MAVERICK_17B_REMOTE_FREE = "meta-llama/llama-4-maverick:free"
+    LLAMA_GUARD_4_12B_MULTIMODAL_REMOTE = "meta-llama/llama-guard-4-12b"  # $0.05/1M tokens
     PHI_4p0_14B_REASONING_REMOTE = "microsoft/phi-4-reasoning-plus"  # $0.07/1M tokens
     PHI_4p0_5p6B_MULTIMODAL_REMOTE_FREE = "microsoft/phi-4-multimodal-instruct"  # $0.05/1M tokens
     PHI_3p5_128K_INSTRUCT_WF_TOOL_USE_REMOTE = (
@@ -68,6 +69,8 @@ class ModelEnum(str, Enum):
     MISTRAL_8B_REMOTE = "mistralai/ministral-8b"  # $0.10/1M tokens
     MISTRAL_NEMO_12B_REMOTE = "mistralai/mistral-nemo"  # $0.03/1M tokens
     MISTRAL_7B_REMOTE = "mistralai/mistral-7b-instruct"  # $0.028/1M tokens
+    # Via LiteLLM
+    MISTRAL_EMBED_REMOTE = "mistral/mistral-embed"  # $0.01/1M tokens
     PHI_4p0_8B_REMOTE_FREE = "microsoft/phi-4-reasoning-plus:free"
     DOLPHIN_3p0_MISTRAL_24B_REMOTE_FREE = "cognitivecomputations/dolphin3.0-mistral-24b:free"
 
