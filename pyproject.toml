@@ -32,6 +32,7 @@ dependencies = [
     "tavily-python>=0.7.2",
     "langchain-mistralai>=0.2.10",
     "litellm>=1.67.5",
+    "langchain-tavily>=0.1.6",
 ]
 
 [dependency-groups]

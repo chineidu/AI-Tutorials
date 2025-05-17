@@ -54,3 +54,4 @@ def get_client(
     )
     print("Using Ollama")
     return instructor.from_openai(ollama_client, mode=_mode)
+

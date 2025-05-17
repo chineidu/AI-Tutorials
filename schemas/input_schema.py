@@ -78,5 +78,5 @@ class ModelEnum(str, Enum):
 
     BASE_MODEL_LOCAL_1 = "gemma3:1b"
     BASE_MODEL_LOCAL_2 = "qwen3:4b-q4_K_M"
-    BASE_REMOTE_MODEL_1_7B = "liquid/lfm-7b"  # $0.01/1M tokens
+    BASE_REMOTE_MODEL_1_7B = "qwen/qwen3-1.7b:free"  # $0.00/1M tokens
     BASE_REMOTE_MODEL_2_8B = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
