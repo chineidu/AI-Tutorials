@@ -1,7 +1,9 @@
+import json
 from typing import Any, Literal
 
 import instructor
-from openai import AsyncOpenAI
+import requests
+from litellm import acompletion
 
 from settings import refresh_settings
 
@@ -26,32 +28,45 @@ context: dict[str, Any] = {
 # )
 
 
-def get_client(
-    is_remote: bool = True, mode: Literal["json_mode", "tool_mode"] = "json_mode"
-) -> instructor.AsyncInstructor:
-    """Get the client to use for entity extraction."""
+def get_aclient(
+    return_type: Literal["litellm", "instructor"],
+) -> Any | instructor.AsyncInstructor:
+    """
+    Create an async client for either litellm or instructor.
 
-    def _return_mode(mode: Literal["json_mode", "tool_mode"]) -> instructor.Mode:
-        if mode == "json_mode":
-            return instructor.Mode.JSON
-        return instructor.Mode.TOOLS
+    Parameters
+    ----------
+    return_type : Literal["litellm", "instructor"]
+        The type of client to return. Can be either "litellm" or "instructor".
 
-    _mode = _return_mode(mode)
-    print(f"Using mode: {_mode!r}")
+    Returns
+    -------
+    Union[Any, instructor.AsyncInstructor]
+        If return_type is "litellm", returns acompletion object.
+        If return_type is "instructor", returns an AsyncInstructor instance.
+    """
+    if return_type == "litellm":
+        print("Using litellm")
+        return acompletion
 
-    if is_remote:
-        # using remote
-        remote_client: AsyncOpenAI = AsyncOpenAI(
-            base_url=SETTINGS.OPENROUTER_URL,
-            api_key=SETTINGS.OPENROUTER_API_KEY.get_secret_value(),
-        )
-        print("Using Remote")
-        return instructor.from_openai(remote_client, mode=_mode)
+    print("Using instructor")
+    return instructor.from_litellm(acompletion, mode=instructor.Mode.JSON)
 
-    ollama_client: AsyncOpenAI = AsyncOpenAI(
-        base_url=SETTINGS.OLLAMA_URL,
-        api_key=SETTINGS.OLLAMA_API_KEY.get_secret_value(),  # required, but unused
+
+def check_rate_limit() -> None:
+    """
+    Check the rate limit status for the OpenRouter API..
+
+    Returns
+    -------
+    None
+        Prints the JSON response from the API containing rate limit information.
+    """
+
+    response = requests.get(
+        url="https://openrouter.ai/api/v1/auth/key",
+        headers={"Authorization": f"Bearer {SETTINGS.OPENROUTER_API_KEY.get_secret_value()}"},
     )
-    print("Using Ollama")
-    return instructor.from_openai(ollama_client, mode=_mode)
+
+    print(json.dumps(response.json(), indent=2))
 

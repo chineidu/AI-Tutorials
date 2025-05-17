@@ -16,6 +16,22 @@ def round_probability(value: float) -> float:
     return value
 
 
+def strip_string(text: str) -> str:
+    """Strip whitespace from beginning and end of a string.
+
+    Parameters
+    ----------
+    text : str
+        The input string to be stripped.
+
+    Returns
+    -------
+    str
+        The string with leading and trailing whitespace removed.
+    """
+    return text.strip()
+
+
 class BaseSchema(BaseModel):
     """Base schema class that inherits from Pydantic BaseModel.
 
@@ -32,10 +48,10 @@ class BaseSchema(BaseModel):
 
 
 Float = Annotated[float, BeforeValidator(round_probability)]
-
+String = Annotated[str, BeforeValidator(strip_string)]
 
 class GeneralResponse(BaseSchema):
-    content: str
+    content: String
 
 
 class ModelEnum(str, Enum):
@@ -71,12 +87,13 @@ class ModelEnum(str, Enum):
     MISTRAL_8B_REMOTE = "mistralai/ministral-8b"  # $0.10/1M tokens
     MISTRAL_NEMO_12B_REMOTE = "mistralai/mistral-nemo"  # $0.03/1M tokens
     MISTRAL_7B_REMOTE = "mistralai/mistral-7b-instruct"  # $0.028/1M tokens
-    # Via LiteLLM
-    MISTRAL_EMBED_REMOTE = "mistral/mistral-embed"  # $0.01/1M tokens
     PHI_4p0_8B_REMOTE_FREE = "microsoft/phi-4-reasoning-plus:free"
     DOLPHIN_3p0_MISTRAL_24B_REMOTE_FREE = "cognitivecomputations/dolphin3.0-mistral-24b:free"
 
     BASE_MODEL_LOCAL_1 = "gemma3:1b"
     BASE_MODEL_LOCAL_2 = "qwen3:4b-q4_K_M"
-    BASE_REMOTE_MODEL_1_7B = "qwen/qwen3-1.7b:free"  # $0.00/1M tokens
-    BASE_REMOTE_MODEL_2_8B = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
+    BASE_REMOTE_MODEL_1_8B = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
+
+    # Via LiteLLM
+    MISTRAL_EMBED__MISTRAL_API = "mistral/mistral-embed"  # $0.00/1M tokens
+    BASE_REMOTE_MODEL_8B_MISTRAL_API = "mistral/ministral-8b-latest"  # $0.00/1M tokens
