@@ -33,6 +33,8 @@ dependencies = [
     "langchain-mistralai>=0.2.10",
     "litellm>=1.67.5",
     "langchain-tavily>=0.1.6",
+    "torch==2.2.0",
+    "outlines>=0.2.3",
 ]
 
 [dependency-groups]
