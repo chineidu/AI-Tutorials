@@ -60,7 +60,7 @@ class ModelEnum(str, Enum):
     GEMMA_3p0_1B_LOCAL = "gemma3:1b"
     GEMMA_3p0_12B_REMOTE_FREE = "google/gemma-3-12b-it:free"
     GEMMA_3p0_12B_REMOTE = "google/gemma-3-12b-it"  # $0.05/1M tokens
-    GEMINI_2p5_FLASH_REMOTE = "google/gemini-2.5-flash-preview"  # $0.15/1M tokens
+    GEMINI_2p5_FLASH_REMOTE = "google/gemini-2.5-flash-preview-05-20"  # $0.15/1M tokens
     GPT_4_p_1_NANO_REMOTE = "openai/gpt-4.1-nano"
     GPT_4_o_MINI_REMOTE = "openai/gpt-4o-mini"  # $0.15/1M tokens
     QWEN_2p5_3B_LOCAL = "qwen2.5:3b"
