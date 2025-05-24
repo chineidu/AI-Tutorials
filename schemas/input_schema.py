@@ -70,6 +70,8 @@ class ModelEnum(str, Enum):
     QWEN_3p0_14B_REMOTE_FREE = "qwen/qwen3-14b:free"
     QWEN_3p0_14B_REMOTE = "qwen/qwen3-14b"  # $0.07/1M tokens
     QWEN_3p0_32B_REMOTE_FREE = "qwen/qwen3-32b:free"
+    QWEN_2p5_VL_72B_INSTRUCT_REMOTE_FREE = "qwen/qwen2.5-vl-72b-instruct:free"  # $0.00/1M tokens
+    QWEN_2p5_VL_72B_INSTRUCT_REMOTE = "qwen/qwen2.5-vl-72b-instruct"  # $0.25/1M tokens
     LLAMA_3p1_8B_REMOTE_FREE = "meta-llama/llama-3.1-8b-instruct:free"
     LLAMA_3p1_8B_REMOTE = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
     LLAMA_3p2_3B_INSTRUCT_REMOTE = "meta-llama/llama-3.2-3b-instruct"  # $0.01/1M tokens

@@ -41,6 +41,7 @@ dependencies = [
     { name = "rich" },
     { name = "spacy" },
     { name = "tavily-python" },
+    { name = "tenacity" },
     { name = "torch" },
 ]
 
@@ -84,6 +85,7 @@ requires-dist = [
     { name = "rich", specifier = ">=13.9.4" },
     { name = "spacy", specifier = ">=3.8.5" },
     { name = "tavily-python", specifier = ">=0.7.2" },
+    { name = "tenacity", specifier = ">=9.1.2" },
     { name = "torch", specifier = "==2.2.0" },
 ]
 
