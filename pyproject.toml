@@ -35,6 +35,7 @@ dependencies = [
     "langchain-tavily>=0.1.6",
     "torch==2.2.0",
     "outlines>=0.2.3",
+    "langchain-litellm>=0.2.1",
 ]
 
 [dependency-groups]

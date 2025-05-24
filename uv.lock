@@ -16,6 +16,7 @@ dependencies = [
     { name = "langchain" },
     { name = "langchain-community" },
     { name = "langchain-core" },
+    { name = "langchain-litellm" },
     { name = "langchain-mistralai" },
     { name = "langchain-openai" },
     { name = "langchain-tavily" },
@@ -58,6 +59,7 @@ requires-dist = [
     { name = "langchain", specifier = ">=0.3.25" },
     { name = "langchain-community", specifier = ">=0.3.23" },
     { name = "langchain-core", specifier = ">=0.3.58" },
+    { name = "langchain-litellm", specifier = ">=0.2.1" },
     { name = "langchain-mistralai", specifier = ">=0.2.10" },
     { name = "langchain-openai", specifier = ">=0.3.16" },
     { name = "langchain-tavily", specifier = ">=0.1.6" },
@@ -1504,6 +1506,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/7e/9c/b430593bf98d55b966fb2f38fdd5f23e77ce07a63c84923ba6de1b2ffe76/langchain_core-0.3.58.tar.gz", hash = "sha256:6ee2282b02fa65bf4ee1afa869d431505536757ff2f1f9f0b432d8ca755d66c6", size = 557004 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/91/454a94275d323c0969e1f17a293cc87cb1398ab2d73f7db0a5de7883f2a9/langchain_core-0.3.58-py3-none-any.whl", hash = "sha256:266f90d2a079fe9510190ad3be88bd993baad43e6cee0f822a883767a4bfdd5b", size = 437550 },
+]
+
+[[package]]
+name = "langchain-litellm"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "langchain-core" },
+    { name = "litellm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/47/ac/5c0c03a2fe3bf204d8632057d4276385e0b62d39bbe4fcd31884bfe355e7/langchain_litellm-0.2.1.tar.gz", hash = "sha256:962b130f21ba28fff6ebcf39099e9200a5f9c988f53be723e6d1279ea290e050", size = 10778 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/78/3c2d75715654d8190d20fba728b1651e0a91b3de5bf524295d40a33a1dfd/langchain_litellm-0.2.1-py3-none-any.whl", hash = "sha256:f23087f62f98d0e17b0f041a4fa909d78469fe46476665faf196948789444d30", size = 11527 },
 ]
 
 [[package]]
