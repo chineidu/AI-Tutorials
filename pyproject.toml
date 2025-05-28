@@ -37,6 +37,7 @@ dependencies = [
     "outlines>=0.2.3",
     "langchain-litellm>=0.2.1",
     "tenacity>=9.1.2",
+    "transformers>=4.52.3",
 ]
 
 [dependency-groups]
