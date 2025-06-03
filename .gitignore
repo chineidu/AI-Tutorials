@@ -175,4 +175,5 @@ cython_debug/
 
 # Custom
 **/**/*.txt
+**/**/*.db
 **/**/notepad.py
