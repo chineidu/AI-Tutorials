@@ -2,7 +2,7 @@ import json
 from typing import Any, Literal
 
 import instructor
-import requests
+import requests  # type: ignore
 from litellm import acompletion
 
 from settings import refresh_settings
@@ -15,7 +15,7 @@ SETTINGS = refresh_settings()
 # template_env: Environment = setup_jinja_environment(searchpath="./prompts")
 THINKING_MODE: bool = False
 
-RESPONSE: list[dict[str, str]] = [
+RESPONSE: list[dict[str, Any]] = [
     {"text": "TRF TO", "label": "transactionReason", "score": 0.84},
     {"text": "Access Bank", "label": "Miscellaneous", "score": 0.93},
     {"text": "PiggyVest", "label": "loanLender", "score": 0.96},
@@ -48,8 +48,7 @@ def get_aclient(
     if return_type == "litellm":
         print("Using litellm")
         return acompletion
-
-    print("Using instructor")
+    
     return instructor.from_litellm(acompletion, mode=instructor.Mode.JSON)
 
 
@@ -69,4 +68,3 @@ def check_rate_limit() -> None:
     )
 
     print(json.dumps(response.json(), indent=2))
-
