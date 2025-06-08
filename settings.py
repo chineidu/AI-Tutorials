@@ -65,4 +65,4 @@ def refresh_settings() -> Settings:
         A new Settings instance with refreshed environment variables
     """
     load_dotenv(override=True)
-    return Settings()
+    return Settings()  # type: ignore

@@ -48,7 +48,7 @@ def get_aclient(
     if return_type == "litellm":
         print("Using litellm")
         return acompletion
-    
+
     return instructor.from_litellm(acompletion, mode=instructor.Mode.JSON)
 
 
