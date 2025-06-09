@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Any, Literal
 
 import instructor
@@ -10,22 +11,11 @@ from settings import refresh_settings
 # Load Settings
 SETTINGS = refresh_settings()
 
-# Load Prompt
-# template_file: str = "ner_prompt.jinja2"
-# template_env: Environment = setup_jinja_environment(searchpath="./prompts")
-THINKING_MODE: bool = False
 
-RESPONSE: list[dict[str, Any]] = [
-    {"text": "TRF TO", "label": "transactionReason", "score": 0.84},
-    {"text": "Access Bank", "label": "Miscellaneous", "score": 0.93},
-    {"text": "PiggyVest", "label": "loanLender", "score": 0.96},
-]
-context: dict[str, Any] = {
-    # TODO:  To be populated later
-}
-# SYSTEM_PROMPT = load_and_render_template(
-#     env=template_env, template_file=template_file, context=context
-# )
+# Required for litellm
+os.environ["OPENROUTER_API_KEY"] = SETTINGS.OPENROUTER_API_KEY.get_secret_value()
+os.environ["OPENROUTER_API_BASE"] = SETTINGS.OPENROUTER_URL
+os.environ["MISTRAL_API_KEY"] = SETTINGS.MISTRAL_API_KEY.get_secret_value()
 
 
 def get_aclient(
