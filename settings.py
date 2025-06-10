@@ -52,6 +52,9 @@ class Settings(BaseSettingsConfig):
     # MISTRAL AI
     MISTRAL_API_KEY: SecretStr
 
+    # GEMINI
+    GEMINI_API_KEY: SecretStr
+
 
 def refresh_settings() -> Settings:
     """Refresh environment variables and return new Settings instance.

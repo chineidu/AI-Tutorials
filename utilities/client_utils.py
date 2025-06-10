@@ -16,6 +16,7 @@ SETTINGS = refresh_settings()
 os.environ["OPENROUTER_API_KEY"] = SETTINGS.OPENROUTER_API_KEY.get_secret_value()
 os.environ["OPENROUTER_API_BASE"] = SETTINGS.OPENROUTER_URL
 os.environ["MISTRAL_API_KEY"] = SETTINGS.MISTRAL_API_KEY.get_secret_value()
+os.environ["GEMINI_API_KEY"] = SETTINGS.GEMINI_API_KEY.get_secret_value()
 
 
 def get_aclient(
