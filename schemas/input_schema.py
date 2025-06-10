@@ -60,8 +60,6 @@ class ModelEnum(str, Enum):
     DEEPSEEK_R1_70B_REMOTE_FREE = "deepseek/deepseek-r1-distill-llama-70b:free"
 
     GEMMA_3p0_1B_LOCAL = "gemma3:1b"
-    GEMMA_3p0_12B_REMOTE_FREE = "google/gemma-3-12b-it:free"
-    GEMMA_3p0_12B_REMOTE = "google/gemma-3-12b-it"  # $0.05/1M tokens
     GEMMA_3p0_27B_REMOTE = "google/gemma-3-27b-it"  # $0.10/1M tokens
     GEMINI_2p0_FLASH_REMOTE = "google/gemini-2.0-flash-001"  # $0.10/1M tokens
     GEMINI_2p5_FLASH_REMOTE = "google/gemini-2.5-flash-preview-05-20"  # $0.15/1M tokens
@@ -71,20 +69,15 @@ class ModelEnum(str, Enum):
 
     QWEN_2p5_3B_LOCAL = "qwen2.5:3b"
     QWEN_3p0_4B_LOCAL = "qwen3:4b-q4_K_M"
-    QWEN_3p0_8B_REMOTE_FREE = "qwen/qwen3-8b:free"
     QWEN_3p0_8B_REMOTE = "qwen/qwen3-8b"  # $0.035/1M tokens
     QWEN_3p0_30B_A3B_REMOTE = "qwen/qwen3-30b-a3b"  # $0.08/1M tokens
-    QWEN_2p5_VL_72B_INSTRUCT_REMOTE_FREE = "qwen/qwen2.5-vl-72b-instruct:free"  # $0.00/1M tokens
     QWEN_2p5_VL_72B_INSTRUCT_REMOTE = "qwen/qwen2.5-vl-72b-instruct"  # $0.25/1M tokens
 
     LLAMA_3p2_3B_INSTRUCT_REMOTE = "meta-llama/llama-3.2-3b-instruct"  # $0.01/1M tokens
+    LLAMA_3p1_8B_INSTRUCT_REMOTE = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
     LLAMA_3p2_11B_VISION_REMOTE_FREE = "meta-llama/llama-3.2-11b-vision-instruct:free"
     LLAMA_3p3_70B_INSTRUCT_REMOTE = "meta-llama/llama-3.3-70b-instruct"  # 0.07/1M tokens
     LLAMA_GUARD_4_12B_MULTIMODAL_REMOTE = "meta-llama/llama-guard-4-12b"  # $0.05/1M tokens
-
-    BASE_MODEL_LOCAL_1 = "gemma3:1b"
-    BASE_MODEL_LOCAL_2 = "qwen3:4b-q4_K_M"
-    BASE_REMOTE_MODEL_1_8B = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
 
     # Via LiteLLM
     MISTRAL_EMBED__MISTRAL_API = "mistral/mistral-embed"  # $0.00/1M tokens
