@@ -55,6 +55,10 @@ class Settings(BaseSettingsConfig):
     # GEMINI
     GEMINI_API_KEY: SecretStr
 
+    # LANGSMITH
+    LANGSMITH_API_KEY: SecretStr
+    LANGSMITH_TRACING: bool = True
+
 
 def refresh_settings() -> Settings:
     """Refresh environment variables and return new Settings instance.
