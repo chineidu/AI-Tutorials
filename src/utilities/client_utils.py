@@ -6,7 +6,7 @@ import instructor
 import requests  # type: ignore
 from litellm import acompletion
 
-from settings import refresh_settings
+from settings import refresh_settings  # type: ignore
 
 # Load Settings
 SETTINGS = refresh_settings()
