@@ -25,7 +25,8 @@ python -m pip install -e .
 - Run the command
 
 ```sh
-langgraph dev --tunnel --config src/studio/langgraph.json
+# tunnel is required for most browsers like Brave, Safari, etc
+langgraph dev --tunnel --config <path-to-langgraph.json-file>
 ```
 
 ```txt
