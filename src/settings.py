@@ -58,6 +58,7 @@ class Settings(BaseSettingsConfig):
     # LANGSMITH
     LANGSMITH_API_KEY: SecretStr
     LANGSMITH_TRACING: bool = True
+    LANGSMITH_PROJECT: str
 
 
 def refresh_settings() -> Settings:

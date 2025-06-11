@@ -177,4 +177,5 @@ cython_debug/
 **/**/*.txt
 **/**/*.db
 **/**/notepad.py
+**/**/note.*
 **/**/.langgraph_api
