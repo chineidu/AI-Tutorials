@@ -49,7 +49,7 @@ class Tool:
         return (
             f"Tool Name: {self.name}, Description: {self.description}, Arguments: {args_str}",
             f"Outputs: {self.outputs}",
-        )
+        )  # type: ignore
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """
@@ -141,12 +141,12 @@ def async_retrying_with_print() -> AsyncRetrying:
         after=lambda _: print("after:", _),
         # Add custom statistics
         retry_error_callback=lambda state: print(
-            f"Final failure after {state.attempt_number} attempts: {state.outcome.exception()}"
+            f"Final failure after {state.attempt_number} attempts: {{state.outcome.exception()}}"  # type: ignore
         ),
     )
 
 
-def simple_retry(attempts: int = 5, delay: int = 1, timeout: int = 30) -> callable:
+def simple_retry(attempts: int = 5, delay: int = 1, timeout: int = 30) -> Callable[..., Any]:
     """
     A clean, simple retry decorator with logging.
 
@@ -171,6 +171,6 @@ def simple_retry(attempts: int = 5, delay: int = 1, timeout: int = 30) -> callab
         before=lambda retry_state: print(f"Attempt {retry_state.attempt_number}..."),
         after=lambda retry_state: print(f"Completed attempt {retry_state.attempt_number}"),
         retry_error_callback=lambda retry_state: print(
-            f"Failed after {retry_state.attempt_number} attempts: {retry_state.outcome.exception()}"
+            f"Failed after {retry_state.attempt_number} attempts: {retry_state.outcome.exception()}"  # type: ignore
         ),
     )

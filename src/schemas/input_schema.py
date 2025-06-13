@@ -57,6 +57,7 @@ class GeneralResponse(BaseSchema):
 
 class ModelEnum(str, Enum):
     DEEPSEEK_R1_1p5B_LOCAL = "deepseek-r1:1.5b"
+    DEEPSEEK_CHAT_685B_REMOTE_FREE = "deepseek/deepseek-chat-v3-0324:free"  
     DEEPSEEK_R1_70B_REMOTE_FREE = "deepseek/deepseek-r1-distill-llama-70b:free"
 
     GEMMA_3p0_1B_LOCAL = "gemma3:1b"
