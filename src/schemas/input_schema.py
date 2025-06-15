@@ -81,5 +81,5 @@ class ModelEnum(str, Enum):
     LLAMA_GUARD_4_12B_MULTIMODAL_REMOTE = "meta-llama/llama-guard-4-12b"  # $0.05/1M tokens
 
     # Via LiteLLM
-    MISTRAL_EMBED__MISTRAL_API = "mistral/mistral-embed"  # $0.00/1M tokens
+    MISTRAL_EMBED_MISTRAL_API = "mistral/mistral-embed"  # $0.00/1M tokens
     BASE_REMOTE_MODEL_8B_MISTRAL_API = "mistral/ministral-8b-latest"  # $0.00/1M tokens
