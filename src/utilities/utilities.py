@@ -1,5 +1,7 @@
 import inspect
+import time
 from dataclasses import dataclass
+from functools import wraps
 from typing import Any, Callable
 
 from tenacity import (
@@ -9,6 +11,10 @@ from tenacity import (
     stop_after_delay,
     wait_fixed,
 )
+
+from src import create_logger
+
+logger = create_logger()
 
 
 @dataclass
@@ -174,3 +180,32 @@ def simple_retry(attempts: int = 5, delay: int = 1, timeout: int = 30) -> Callab
             f"Failed after {retry_state.attempt_number} attempts: {retry_state.outcome.exception()}"  # type: ignore
         ),
     )
+
+
+def async_timer(func: Callable[..., Any]) -> Callable[..., Any]:
+    """
+    A decorator that measures and prints the execution time of an async function.
+
+    Parameters
+    ----------
+    func : Callable
+        The async function to be timed.
+
+    Returns
+    -------
+    Callable
+        A wrapped async function that prints execution time.
+    """
+
+    @wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """
+        Wrapper function that times the execution of the decorated function.
+        """
+        start_time: float = time.perf_counter()
+        result = await func(*args, **kwargs)
+        duration: float = time.perf_counter() - start_time
+        logger.info(f"{func.__name__} executed in {duration:.2f} seconds")
+        return result
+
+    return wrapper

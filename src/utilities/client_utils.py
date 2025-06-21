@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 import instructor
 import requests  # type: ignore
-from litellm import acompletion
+from openai import AsyncOpenAI
 
 from settings import refresh_settings  # type: ignore
 
@@ -19,28 +19,23 @@ os.environ["MISTRAL_API_KEY"] = SETTINGS.MISTRAL_API_KEY.get_secret_value()
 os.environ["GEMINI_API_KEY"] = SETTINGS.GEMINI_API_KEY.get_secret_value()
 
 
-def get_aclient(
-    return_type: Literal["litellm", "instructor"],
-) -> Any | instructor.AsyncInstructor:
+def openai_client() -> instructor.AsyncInstructor:
     """
-    Create an async client for either litellm or instructor.
-
-    Parameters
-    ----------
-    return_type : Literal["litellm", "instructor"]
-        The type of client to return. Can be either "litellm" or "instructor".
+    Create an async OpenAI client configured with OpenRouter credentials.
 
     Returns
     -------
-    Union[Any, instructor.AsyncInstructor]
-        If return_type is "litellm", returns acompletion object.
-        If return_type is "instructor", returns an AsyncInstructor instance.
+    AsyncOpenAI
+        An authenticated async OpenAI client instance.
     """
-    if return_type == "litellm":
-        print("Using litellm")
-        return acompletion
+    return instructor.from_openai(
+        AsyncOpenAI(
+            api_key=SETTINGS.OPENROUTER_API_KEY.get_secret_value(),
+            base_url=SETTINGS.OPENROUTER_URL,
+        ),
+        mode=instructor.Mode.JSON,
+    )
 
-    return instructor.from_litellm(acompletion, mode=instructor.Mode.JSON)
 
 
 def check_rate_limit() -> None:

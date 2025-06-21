@@ -57,7 +57,7 @@ class GeneralResponse(BaseSchema):
 
 class ModelEnum(str, Enum):
     DEEPSEEK_R1_1p5B_LOCAL = "deepseek-r1:1.5b"
-    DEEPSEEK_CHAT_685B_REMOTE_FREE = "deepseek/deepseek-chat-v3-0324:free"  
+    DEEPSEEK_CHAT_685B_REMOTE_FREE = "deepseek/deepseek-chat-v3-0324:free"
     DEEPSEEK_R1_70B_REMOTE_FREE = "deepseek/deepseek-r1-distill-llama-70b:free"
 
     GEMMA_3p0_1B_LOCAL = "gemma3:1b"
@@ -74,6 +74,7 @@ class ModelEnum(str, Enum):
     QWEN_3p0_30B_A3B_REMOTE = "qwen/qwen3-30b-a3b"  # $0.08/1M tokens
     QWEN_2p5_VL_72B_INSTRUCT_REMOTE = "qwen/qwen2.5-vl-72b-instruct"  # $0.25/1M tokens
 
+    LLAMA_3p2_1B_INSTRUCT_REMOTE = "meta-llama/llama-3.2-1b-instruct" # $0.005/1M tokens
     LLAMA_3p2_3B_INSTRUCT_REMOTE = "meta-llama/llama-3.2-3b-instruct"  # $0.01/1M tokens
     LLAMA_3p1_8B_INSTRUCT_REMOTE = "meta-llama/llama-3.1-8b-instruct"  # $0.02/1M tokens
     LLAMA_3p2_11B_VISION_REMOTE_FREE = "meta-llama/llama-3.2-11b-vision-instruct:free"
@@ -83,3 +84,5 @@ class ModelEnum(str, Enum):
     # Via LiteLLM
     MISTRAL_EMBED_MISTRAL_API = "mistral/mistral-embed"  # $0.00/1M tokens
     BASE_REMOTE_MODEL_8B_MISTRAL_API = "mistral/ministral-8b-latest"  # $0.00/1M tokens
+
+    INDICINA_LLM_8B_REMOTE = "/data/indicinaaa/Qwen3-8B-unsloth-bnb-4bit-fp16"  # $0.0001/1M tokens
