@@ -10,7 +10,7 @@ from langchain_core.messages import (
     ToolMessage,
 )
 from openai import AsyncOpenAI
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel, SecretStr, validate_call
 
 SYSTEM_MESSAGE: str = """
 <system>
@@ -38,9 +38,13 @@ valid JSON object that matches this exact schema:
 - If text contains ambiguous information, choose the most likely interpretation
 </guidelines>
 
-<output>
-Valid JSON object only
-</output>
+<validation>
+Rsponse must:
+- Be parseable by json.loads
+- Contain only fields defined in the schema
+- Use correct data types for each field
+- Have no trailing commas or syntax errors
+</validation>
 
 </system>
 """
@@ -84,7 +88,10 @@ class LLMResponse:
     base_url: str
     model: str
 
-    async def ainvoke(self, messages: list[dict[str, str]]) -> str | None:
+    @validate_call
+    async def ainvoke(
+        self, messages: list[dict[str, str]]
+    ) -> tuple[str, Type[BaseModel]] | tuple[None, dict[str, str]]:
         """Asynchronously invoke the LLM API with the given messages.
 
         Parameters
@@ -94,14 +101,11 @@ class LLMResponse:
 
         Returns
         -------
-        str | None
-            The cleaned response text if successful, None if an error occurs.
+        tuple[str, Type[BaseModel]] | tuple[None, dict[str, str]]
+            A tuple containing either:
+            - (content, raw_response)
+            - (None, error_info)
 
-        Notes
-        -----
-        The function attempts to create an async client and make an API call.
-        If successful, it returns the cleaned response content.
-        If an exception occurs, it returns None.
         """
         try:
             aclient: AsyncOpenAI = AsyncOpenAI(
@@ -118,11 +122,13 @@ class LLMResponse:
                 seed=42,
             )
 
-            return _clean_response_text_single_regex(raw_response.choices[0].message.content)  # type: ignore
+            content = _clean_response_text_single_regex(raw_response.choices[0].message.content)  # type: ignore
+            return (content, raw_response)  # type: ignore
 
-        except Exception:
-            return None
+        except Exception as e:
+            return (None, {"status": "error", "error": str(e)})  # type: ignore
 
+    @validate_call
     async def get_structured_response(
         self, message: str, response_model: Type[BaseModel]
     ) -> tuple[Type[BaseModel], Type[BaseModel]] | tuple[dict[str, str], dict[str, str]]:
@@ -139,7 +145,7 @@ class LLMResponse:
         -------
         A tuple containing either:
         - (structured_output, raw_response)
-        - (error_dict, error_info)
+        - (None, error_info)
         """
         try:
             aclient: AsyncOpenAI = AsyncOpenAI(
@@ -147,8 +153,8 @@ class LLMResponse:
                 base_url=self.base_url,
             )
 
-            json_schema: dict = response_model.model_json_schema()
-            raw_response = await aclient.chat.completions.create(  # type: ignore
+            json_schema: dict[str, str] = response_model.model_json_schema()
+            raw_response: Type[BaseModel] = await aclient.chat.completions.create(  # type: ignore
                 model=self.model,
                 messages=[
                     {
@@ -162,17 +168,18 @@ class LLMResponse:
                 seed=42,
             )
 
-            _value = _clean_response_text_single_regex(raw_response.choices[0].message.content)
+            _value = _clean_response_text_single_regex(raw_response.choices[0].message.content)  # type: ignore
             structured_output = response_model.model_validate(json.loads(_value))
             return (structured_output, raw_response)  # type: ignore
 
         except Exception as e:
             return (
+                None,
                 {"status": "error", "error": str(e)},
-                {"status": "error", "raw_response": None},
             )  # type: ignore
 
 
+@validate_call
 def convert_to_openai_messages(messages: list[AnyMessage]) -> list[dict[str, Any]]:
     """
     Convert a list of messages to OpenAI compatible message format.
@@ -205,3 +212,22 @@ def convert_to_openai_messages(messages: list[AnyMessage]) -> list[dict[str, Any
         else:
             formatted.append({"role": "user", "content": msg.content})
     return formatted
+
+
+@validate_call
+def convert_openai_messages_to_string(messages: list[dict[str, Any]]) -> str:
+    """
+    Convert a list of OpenAI messages to a formatted string representation.
+
+    Parameters
+    ----------
+    messages : list[dict[str, Any]]
+        List of OpenAI message dictionaries containing 'role' and 'content' keys.
+
+    Returns
+    -------
+    str
+        A formatted string with each message's role and content on separate lines.
+    """
+    msgs: list[str] = [f"\nRole: {msg['role']}\nContent: {msg['content']}" for msg in messages]
+    return "\n".join(msgs)
