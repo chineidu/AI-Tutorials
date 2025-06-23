@@ -50,6 +50,17 @@ Rsponse must:
 </system>
 """
 
+SYSTEM_MESSAGE_VLLM: str = """
+<system>
+/no_think
+
+<role>
+You're an AI assistant that helps people extract relevant information.
+</role>
+
+</system>
+"""
+
 
 def _clean_response_text_single_regex(text: str) -> str:
     """
@@ -180,10 +191,7 @@ class LLMResponse:
             raw_response = await aclient.chat.completions.create(  # type: ignore
                 model=self.model,
                 messages=[
-                    {
-                        "role": "system",
-                        "content": SYSTEM_MESSAGE.format(json_schema=json_schema),
-                    },
+                    {"role": "system", "content": SYSTEM_MESSAGE_VLLM},
                     {"role": "user", "content": message},
                 ],
                 extra_body={"enable_thinking": False, "guided_json": json_schema},
@@ -200,6 +208,7 @@ class LLMResponse:
                 None,
                 {"status": "error", "error": str(e)},
             )
+
 
 @validate_call
 def convert_to_openai_messages(messages: list[AnyMessage]) -> list[dict[str, Any]]:
