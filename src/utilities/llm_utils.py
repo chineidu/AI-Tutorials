@@ -1,7 +1,7 @@
 import json
 import re
 from dataclasses import dataclass
-from typing import Any, Type
+from typing import Any, Type, TypeVar
 
 from langchain_core.messages import (
     AIMessage,
@@ -12,6 +12,7 @@ from langchain_core.messages import (
 from openai import AsyncOpenAI
 from pydantic import BaseModel, SecretStr, validate_call
 
+T = TypeVar("T", bound=BaseModel)
 SYSTEM_MESSAGE: str = """
 <system>
 /no_think
@@ -82,16 +83,28 @@ class LLMResponse:
         The base URL for the API endpoint.
     model : str
         The name of the LLM model to use.
+    use_vllm : bool, optional
+        Whether to use vLLM for inference, by default False.
     """
 
     api_key: SecretStr
     base_url: str
     model: str
+    use_vllm: bool = False
+
+    def _get_client(self) -> AsyncOpenAI:
+        """Get an instance of the OpenAI client."""
+        return AsyncOpenAI(
+            api_key=self.api_key.get_secret_value(),
+            base_url=self.base_url,
+            max_retries=3,
+            timeout=180,  # type: ignore
+        )
 
     @validate_call
     async def ainvoke(
         self, messages: list[dict[str, str]]
-    ) -> tuple[str, Type[BaseModel]] | tuple[None, dict[str, str]]:
+    ) -> tuple[str, Type[T]] | tuple[None, dict[str, str]]:
         """Asynchronously invoke the LLM API with the given messages.
 
         Parameters
@@ -101,19 +114,14 @@ class LLMResponse:
 
         Returns
         -------
-        tuple[str, Type[BaseModel]] | tuple[None, dict[str, str]]
+        tuple[str, Type[T]] | tuple[None, dict[str, str]]
             A tuple containing either:
             - (content, raw_response)
             - (None, error_info)
 
         """
         try:
-            aclient: AsyncOpenAI = AsyncOpenAI(
-                api_key=self.api_key.get_secret_value(),
-                base_url=self.base_url,
-                max_retries=3,
-                timeout=180,  # type: ignore
-            )
+            aclient: AsyncOpenAI = self._get_client()
 
             raw_response = await aclient.chat.completions.create(  # type: ignore
                 model=self.model,
@@ -130,15 +138,15 @@ class LLMResponse:
 
     @validate_call
     async def get_structured_response(
-        self, message: str, response_model: Type[BaseModel]
-    ) -> tuple[Type[BaseModel], Type[BaseModel]] | tuple[None, dict[str, str]]:
+        self, message: str, response_model: Type[T]
+    ) -> tuple[Type[T], Type[T]] | tuple[None, dict[str, str]]:
         """Get structured response from OpenAI API.
 
         Parameters
         ----------
             message : str
                 The user message to send to the API.
-            response_model : Type[BaseModel]
+            response_model : Type[T]
                 The Pydantic model class to validate the response.
 
         Returns
@@ -148,13 +156,28 @@ class LLMResponse:
         - (None, error_info)
         """
         try:
-            aclient: AsyncOpenAI = AsyncOpenAI(
-                api_key=self.api_key.get_secret_value(),
-                base_url=self.base_url,
-            )
-
+            aclient: AsyncOpenAI = self._get_client()
             json_schema: dict[str, str] = response_model.model_json_schema()
-            raw_response: Type[BaseModel] = await aclient.chat.completions.create(  # type: ignore
+            if not self.use_vllm:
+                raw_response: Type[T] = await aclient.chat.completions.create(  # type: ignore
+                    model=self.model,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": SYSTEM_MESSAGE.format(json_schema=json_schema),
+                        },
+                        {"role": "user", "content": message},
+                    ],
+                    response_format={"type": "json_schema", "schema": json_schema, "strict": True},
+                    temperature=0,
+                    seed=42,
+                )
+
+                _value = _clean_response_text_single_regex(raw_response.choices[0].message.content)  # type: ignore
+                structured_output: Type[T] = response_model.model_validate(json.loads(_value))  # type: ignore
+                return (structured_output, raw_response)  # type: ignore
+
+            raw_response = await aclient.chat.completions.create(  # type: ignore
                 model=self.model,
                 messages=[
                     {
@@ -163,13 +186,13 @@ class LLMResponse:
                     },
                     {"role": "user", "content": message},
                 ],
-                response_format={"type": "json_schema", "schema": json_schema, "strict": True},
+                extra_body={"enable_thinking": False, "guided_json": json_schema},
                 temperature=0,
                 seed=42,
             )
 
             _value = _clean_response_text_single_regex(raw_response.choices[0].message.content)  # type: ignore
-            structured_output = response_model.model_validate(json.loads(_value))
+            structured_output = response_model.model_validate(json.loads(_value))  # type: ignore
             return (structured_output, raw_response)  # type: ignore
 
         except Exception as e:
@@ -177,7 +200,6 @@ class LLMResponse:
                 None,
                 {"status": "error", "error": str(e)},
             )
-
 
 @validate_call
 def convert_to_openai_messages(messages: list[AnyMessage]) -> list[dict[str, Any]]:
