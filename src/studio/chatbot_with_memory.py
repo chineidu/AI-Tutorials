@@ -16,11 +16,11 @@ from src.studio import configuration  # type: ignore
 settings = refresh_settings()
 
 
-class DataState(TypedDict):
+class MessageState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
 
 
-class DataStateValidator(BaseModel):
+class MessageStateValidator(BaseModel):
     messages: Annotated[list[BaseChatModel], add_messages]
 
 
@@ -86,7 +86,7 @@ llm: BaseChatModel = init_chat_model(
 )
 
 
-async def call_llm(state: DataState, config: RunnableConfig, store: BaseStore) -> dict[str, Any]:
+async def call_llm(state: MessageState, config: RunnableConfig, store: BaseStore) -> dict[str, Any]:
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
 
@@ -111,7 +111,7 @@ async def call_llm(state: DataState, config: RunnableConfig, store: BaseStore) -
     return {"messages": [response]}
 
 
-async def write_memory(state: DataState, config: RunnableConfig, store: BaseStore) -> None:
+async def write_memory(state: MessageState, config: RunnableConfig, store: BaseStore) -> None:
     # Get configuration
     configurable = configuration.Configuration.from_runnable_config(config)
     user_id = configurable.user_id
@@ -135,7 +135,7 @@ async def write_memory(state: DataState, config: RunnableConfig, store: BaseStor
 
 
 # Graph
-graph_builder = StateGraph(DataState, config_schema=configuration.Configuration)
+graph_builder = StateGraph(MessageState, config_schema=configuration.Configuration)
 
 # Add nodes
 graph_builder.add_node("call_llm", call_llm)

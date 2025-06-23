@@ -16,7 +16,7 @@ SYSTEM_MESSAGE: str = """
 <system>
 /no_think
 <role>
-You are a data extraction assistant. Extract information from the provided text and return ONLY a 
+You are a data extraction expert. Extract information from the provided text and return ONLY a 
 valid JSON object that matches this exact schema:
 
 <schema>
@@ -131,7 +131,7 @@ class LLMResponse:
     @validate_call
     async def get_structured_response(
         self, message: str, response_model: Type[BaseModel]
-    ) -> tuple[Type[BaseModel], Type[BaseModel]] | tuple[dict[str, str], dict[str, str]]:
+    ) -> tuple[Type[BaseModel], Type[BaseModel]] | tuple[None, dict[str, str]]:
         """Get structured response from OpenAI API.
 
         Parameters
@@ -176,7 +176,7 @@ class LLMResponse:
             return (
                 None,
                 {"status": "error", "error": str(e)},
-            )  # type: ignore
+            )
 
 
 @validate_call

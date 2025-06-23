@@ -70,8 +70,6 @@ class ModelEnum(str, Enum):
 
     QWEN_2p5_3B_LOCAL = "qwen2.5:3b"
     QWEN_3p0_4B_LOCAL = "qwen3:4b-q4_K_M"
-    QWEN_3p0_8B_REMOTE = "qwen/qwen3-8b"  # $0.035/1M tokens
-    QWEN_3p0_30B_A3B_REMOTE = "qwen/qwen3-30b-a3b"  # $0.08/1M tokens
     QWEN_2p5_VL_72B_INSTRUCT_REMOTE = "qwen/qwen2.5-vl-72b-instruct"  # $0.25/1M tokens
 
     LLAMA_3p2_1B_INSTRUCT_REMOTE = "meta-llama/llama-3.2-1b-instruct" # $0.005/1M tokens
